@@ -1,33 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import Calendar from "./Calendar.tsx";
+import dayjs from "dayjs";
+import {months, yearsArray} from "./utils.ts";
+import {useState} from "react";
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [currentDate, setCurrentDate] = useState(dayjs());
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+        <button onClick={() => {setCurrentDate((prev) => prev.subtract(1, 'month'))}}>{'<'}</button>
+        <button onClick={() => {setCurrentDate((prev) => prev.add(1, 'month'))}}>{'>'}</button>
+        <select onChange={(event) => {
+            setCurrentDate((prev) => prev.set('month', Number(event.target.value)))
+        }}>
+            {months.map((month) => <option key={month.label} selected={currentDate.month() === month.value} value={month.value}>{month.label}</option>)}
+        </select>
+
+        <select onChange={(event) => {
+            setCurrentDate((prev) => prev.set('year', Number(event.target.value)))
+        }}>
+            {yearsArray.map((year) => <option key={year} selected={currentDate.year() === year} value={year}>{year}</option>)}
+        </select>
+        <Calendar calendarType="month" selectedYear={currentDate.year()} selectedMonth={currentDate.month()} />
     </>
   )
 }
