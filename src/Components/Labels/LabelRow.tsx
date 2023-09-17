@@ -1,4 +1,4 @@
-import {Color} from "../Components/Color.tsx";
+import {Color} from "../Ui/Color.tsx";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faPenToSquare, faCheck, faXmark} from '@fortawesome/free-solid-svg-icons'
 import styled from "styled-components";

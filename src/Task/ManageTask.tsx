@@ -2,6 +2,10 @@ import styled from "styled-components";
 import {useCallback, useState} from "react";
 
 const CreateTaskWrapper = styled.div`
+  max-width: 65%;
+  input {
+    max-width: 100%;
+  }
 `
 
 interface Props {

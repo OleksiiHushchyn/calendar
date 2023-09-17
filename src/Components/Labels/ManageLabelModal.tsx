@@ -11,6 +11,14 @@ const Table = styled.table`
     border: 1px solid;
   }
 `
+
+const LabelForm = styled.div`
+  display: flex;
+  gap: 5px;
+  label, input {
+    margin: auto;
+  }
+`
 const ManageLabelModal = () => {
     const [show, setShow] = useState(false)
     const [text, setText] = useState('');
@@ -18,9 +26,11 @@ const ManageLabelModal = () => {
     const {labels, addLabel} = useLabelContext();
 
     const handleAddLabel = useCallback(() => {
-        addLabel({text, color});
-        setText('')
-        setColor('')
+        if(text && color){
+            addLabel({text, color});
+            setText('')
+            setColor('')
+        }
     },[text, color, addLabel])
 
     return (
@@ -29,9 +39,12 @@ const ManageLabelModal = () => {
             {show && (
                 <Modal handleClose={() => setShow(false)}>
                     <h3>Add new label</h3>
-                    <input value={color} onChange={(e) => {setColor(e.target.value)}} type="color"/>
-                    <input value={text} onChange={(e) => {setText(e.target.value)}} type="text"/>
-                    <button onClick={handleAddLabel}>ok</button>
+                    <LabelForm>
+                        <label htmlFor="color-picker">Color:</label>
+                        <input id="color-picker" value={color} onChange={(e) => {setColor(e.target.value)}} type="color"/>
+                        <input id="label-text" placeholder="Label text" value={text} onChange={(e) => {setText(e.target.value)}} type="text"/>
+                        <button onClick={handleAddLabel}>ok</button>
+                    </LabelForm>
                     <h3>Labels</h3>
                     <Table>
                         <thead>
@@ -47,7 +60,6 @@ const ManageLabelModal = () => {
                         ))}
                         </tbody>
                     </Table>
-                    hello world
                 </Modal>
             )}
         </>

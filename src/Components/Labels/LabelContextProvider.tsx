@@ -1,4 +1,4 @@
-import {createContext, ReactNode, useCallback, useContext, useState} from "react";
+import {createContext, ReactNode, useCallback, useContext, useEffect, useState} from "react";
 
 
 interface Props {
@@ -24,13 +24,32 @@ const LabelContextProvider = ({ children }: Props) => {
         {color: '#76ec09', text: 'qwe'}
     ]);
 
-    const addLabel = useCallback((label: Label) => {
-        setLabels((prevState) => ([...prevState, label]));
+    useEffect(() => {
+        const savedLabels = localStorage.getItem("labels");
+        if(savedLabels){
+            setLabels(JSON.parse(savedLabels))
+        }
+    }, []);
+
+    const saveLabels = useCallback((data:Array<Label>) => {
+        localStorage.setItem("labels", JSON.stringify(data));
     },[])
 
+    const addLabel = useCallback((label: Label) => {
+        setLabels((prevState) => {
+            const data = [...prevState, label];
+            saveLabels(data);
+            return data;
+        });
+    },[saveLabels])
+
     const updateLabel = useCallback((label: Label) => {
-        setLabels((prevState) => (prevState.map((item) => item.color === label.color ? label : item)));
-    },[])
+        setLabels((prevState) => {
+            const data = prevState.map((item) => item.color === label.color ? label : item)
+            saveLabels(data);
+            return data;
+        });
+    },[saveLabels])
 
     return (
         <LabelContext.Provider value={{labels, addLabel, updateLabel}}>

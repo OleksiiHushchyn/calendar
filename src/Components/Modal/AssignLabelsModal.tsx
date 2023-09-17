@@ -1,6 +1,6 @@
 import {useLabelContext} from "../Labels/LabelContextProvider.tsx";
 import styled from "styled-components";
-import Modal from "../Modal/Modal.tsx";
+import Modal from "./Modal.tsx";
 import {useCallback, useState} from "react";
 
 const ColorWrapper = styled.div<{ selected?: boolean }>`
@@ -12,8 +12,8 @@ const ColorWrapper = styled.div<{ selected?: boolean }>`
 
 const Color = styled.div<{ color: string;}>`
   background: ${props => props.color};
-  height: 20px;
-  width: 20px;
+  height: 50px;
+  width: 50px;
   border-radius: 50%;
 `
 

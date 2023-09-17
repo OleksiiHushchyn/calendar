@@ -1,4 +1,4 @@
-import {ReactNode, useCallback} from "react";
+import {ReactNode, useCallback, useEffect} from "react";
 import styled from "styled-components";
 
 interface Props {
@@ -27,6 +27,19 @@ const ModalContent = styled.div`
   border-radius: 8px;
 `
 const Modal = ({children, handleOk, handleClose}: Props) => {
+
+    const onKeyDown = useCallback((event:KeyboardEvent) => {
+        if(event.key === 'Escape'){
+            handleClose()
+        }
+    },[handleClose])
+
+    useEffect(() => {
+        document.addEventListener('keydown', onKeyDown);
+        return () => {
+            document.removeEventListener('keydown', onKeyDown);
+        };
+    }, [onKeyDown]);
 
     const handleSubmit = useCallback(() => {
         handleOk && handleOk();

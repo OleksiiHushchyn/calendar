@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import TaskComponent from "./Task/TaskComponent.tsx";
+import TaskComponent from "../Task/TaskComponent.tsx";
 import {DragEvent, useCallback, useEffect, useState} from "react";
-import ManageTask from "./Task/ManageTask.tsx";
+import ManageTask from "../Task/ManageTask.tsx";
 import { v4 as uuidv4 } from 'uuid';
-import {useDaysTaskContext} from "./Task/DaysWithTasksContextProvider.tsx";
-import {useFilterContext} from "./Filters/FiltersContextProvider.tsx";
+import {useDaysTaskContext} from "../Task/DaysWithTasksContextProvider.tsx";
+import {useFilterContext} from "../Components/Filters/FiltersContextProvider.tsx";
 interface Props {
     value: DayWithTasks
     worldWideHolidayList?: Array<string>
@@ -19,13 +19,17 @@ const DayWrapper = styled.div<{isCurrent: boolean}>`
   background-color: #dcd7cc;
   opacity: ${props => props.isCurrent ? '1' : '0.5'};
 `
+
+const DayHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
 const Day = ({value, worldWideHolidayList}: Props) => {
     const {daysList, addTask, moveTask, updateTask, deleteTask} = useDaysTaskContext();
     const [showAddForm, setShowAddForm] = useState<boolean>(false)
     const {textFilter, colorFilter} = useFilterContext()
 
     const [tasks, setTasks] = useState<Array<Task>>([]);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [currentIndex, setCurrentIndex] = useState<number>(0);
 
     useEffect(() => {
@@ -70,9 +74,11 @@ const Day = ({value, worldWideHolidayList}: Props) => {
     return (
         <>
             <DayWrapper isCurrent={value.isCurrent} onDragOver={onDragOver} onDrop={(e) => onDrop(e)}>
-                <div>{value.formattedDayValue}</div>
+                <DayHeader>
+                    <div>{value.formattedDayValue}</div>
+                    {showAddForm ? <ManageTask handleClose={handleClose} handleSubmit={handleCreateTask} /> : <button  className="btn-small" onClick={() => {setShowAddForm(true)}}>+</button>}
+                </DayHeader>
                 {worldWideHolidayList && worldWideHolidayList.map((item) => (<div>{item}</div>))}
-                {showAddForm ? <ManageTask handleClose={handleClose} handleSubmit={handleCreateTask} /> : <div onClick={() => {setShowAddForm(true)}}>+</div>}
                 {tasks.map((task, index) => (<TaskComponent handleDelete={handleDeleteTask} handleUpdate={handleUpdateTask} key={task.id} task={task} index={index} setCurrentIndex={setCurrentIndex} />))}
             </DayWrapper>
         </>

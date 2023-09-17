@@ -3,8 +3,8 @@ import {Dispatch, DragEvent, SetStateAction, useCallback, useState} from "react"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faCircle, faTrash} from '@fortawesome/free-solid-svg-icons'
 import ManageTask from "./ManageTask.tsx";
-import AssignLabelsModal from "./AssignLabelsModal.tsx";
-import {Color} from "../Components/Color.tsx";
+import AssignLabelsModal from "../Components/Modal/AssignLabelsModal.tsx";
+import {Color} from "../Components/Ui/Color.tsx";
 
 
 interface Props {
@@ -76,10 +76,10 @@ const TaskComponent = ({task, index, setCurrentIndex, handleDelete, handleUpdate
     },[handleUpdate, task])
 
     return (
-        <TaskWrapper onDragEnter={onDragEnter} onDragStart={onDragStart} draggable>
+        <TaskWrapper className="border border-primary" onDragEnter={onDragEnter} onDragStart={onDragStart} draggable>
             <TaskContent>
             <LabelContainer>
-                {task.labels.map((label) => <Color color={label.color} width={20} height={5} />)}
+                {task.labels.map((label) => <Color color={label.color} width={30} height={10} />)}
             </LabelContainer>
             {
                 editMode ?

@@ -1,4 +1,4 @@
-import {useDaysTaskContext} from "./Task/DaysWithTasksContextProvider.tsx";
+import {useDaysTaskContext} from "../../Task/DaysWithTasksContextProvider.tsx";
 import {useCallback} from "react";
 import dayjs from "dayjs";
 

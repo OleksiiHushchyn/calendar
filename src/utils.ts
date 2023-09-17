@@ -14,3 +14,5 @@ export const months = [
 ]
 
 export const yearsArray = Array.from({length: 2070 - 2022 + 1}, (_, i) => i + 2022);
+
+export const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];

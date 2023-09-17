@@ -2,7 +2,8 @@ import styled from "styled-components";
 import dayjs from "dayjs";
 import {useEffect, useState} from "react";
 import Day from "./Day.tsx";
-import useGetWorldWideHolidays from "./api/useGetWorldWideHolidays.tsx";
+import useGetWorldWideHolidays from "../api/useGetWorldWideHolidays.tsx";
+import {days} from "../utils.ts";
 
 interface Props {
     calendarType: 'week' | 'month'
@@ -14,14 +15,15 @@ interface Props {
 const CalendarContainer = styled.div`
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: 1fr repeat(6, 2fr);
+    grid-template-rows: 40px repeat(6, 2fr);
     grid-column-gap: 5px;
     grid-row-gap: 5px;
+    .card-header {
+      margin-top: auto;
+    }
 `
 
-const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-const Calendar = ({calendarType, selectedYear, selectedMonth}: Props) => {
+const Calendar = ({selectedYear, selectedMonth}: Props) => {
     const [dates, setDates] = useState<Array<DayWithTasks>>([])
 
     const [worldWideHolidays] = useGetWorldWideHolidays();
@@ -51,7 +53,7 @@ const Calendar = ({calendarType, selectedYear, selectedMonth}: Props) => {
     return (
 
                     <CalendarContainer id="calendar">
-                        {days.map((dayName) => (<div key={dayName}>{dayName}</div>))}
+                        {days.map((dayName) => (<div className="card-header" key={dayName}>{dayName}</div>))}
                         {dates.map((item) => (<Day worldWideHolidayList={worldWideHolidays[item.formattedValue]} key={item.formattedValue} value={item} />))}
                     </CalendarContainer>
     )

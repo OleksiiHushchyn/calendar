@@ -1,4 +1,4 @@
-import {createContext, ReactNode, useCallback, useContext, useState} from 'react';
+import {createContext, ReactNode, useCallback, useContext, useEffect, useState} from 'react';
 
 interface DaysWithTasksContextProps {
     daysList: Record<string, Array<Task>>
@@ -37,16 +37,31 @@ const DaysTasksContextProvider = ({ children }: Props) => {
         setDaysList((prevState) =>({...prevState, [day]: tasks}))
     },[])
 
+    const saveCalendar = useCallback((data:Record<string, Array<Task>>) => {
+        localStorage.setItem("calendar", JSON.stringify(data));
+    },[])
+
+    useEffect(() => {
+        const savedCalendar = localStorage.getItem("calendar");
+        if(savedCalendar){
+            setDaysList(JSON.parse(savedCalendar))
+        }
+    }, []);
+
     const addTask = useCallback((day: string, task: Task) => {
         setDaysList((prevState) => {
             if(prevState[day]){
-                return {...prevState, [day]: [...prevState[day], task]};
+                const data = {...prevState, [day]: [...prevState[day], task]};
+                saveCalendar(data);
+                return data;
             }
-            return {...prevState, [day]: [task]};
+            const data = {...prevState, [day]: [task]};
+            saveCalendar(data);
+            return data;
         })
-    },[]);
+    },[saveCalendar]);
 
-    const moveTask = (to: string, taskId: string, index: number) => {
+    const moveTask = useCallback((to: string, taskId: string, index: number) => {
         setDaysList((prevState) => {
             const task = findTaskById(taskId);
             if(task){
@@ -55,25 +70,33 @@ const DaysTasksContextProvider = ({ children }: Props) => {
                 fromTaskList.splice(fromTaskListElementIndex, 1);
                 const toTaskList = prevState[to] || [];
                 toTaskList.splice(index, 0, {...task, date: to});
-                return {...prevState, [task.date]: fromTaskList, [to]: toTaskList};
+                const data = {...prevState, [task.date]: fromTaskList, [to]: toTaskList};
+                saveCalendar(data);
+                return data;
             }
 
             return prevState
         })
-    }
+    },[saveCalendar, findTaskById])
 
     const updateTask = useCallback((task: Task) => {
-        setDaysList((prevState) => ({...prevState, [task.date]: prevState[task.date].map((item) => item.id === task.id ? task : item)}))
-    },[]);
+        setDaysList((prevState) => {
+            const data = {...prevState, [task.date]: prevState[task.date].map((item) => item.id === task.id ? task : item)};
+            saveCalendar(data);
+            return data;
+        })
+    },[saveCalendar]);
 
     const deleteTask = useCallback((task:Task) => {
         setDaysList((prevState) => {
             const dateTaskList = prevState[task.date];
             const dateTaskListElementIndex = dateTaskList.indexOf(task);
             dateTaskList.splice(dateTaskListElementIndex, 1);
-            return {...prevState, [task.date]: dateTaskList};
+            const data = {...prevState, [task.date]: dateTaskList};
+            saveCalendar(data);
+            return data;
         })
-    },[]);
+    },[saveCalendar]);
 
     return (
         <DaysTaskContext.Provider value={{daysList, addTask, moveTask, updateTask, deleteTask, exportTasks}}>

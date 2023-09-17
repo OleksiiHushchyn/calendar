@@ -1,7 +1,7 @@
 import {useCallback, useState} from "react";
-import AssignLabelsModal from "../Task/AssignLabelsModal.tsx";
+import AssignLabelsModal from "../Modal/AssignLabelsModal.tsx";
 import {useFilterContext} from "./FiltersContextProvider.tsx";
-import {Color} from "../Components/Color.tsx";
+import {Color} from "../Ui/Color.tsx";
 import styled from "styled-components";
 
 const LabelFilterContainer = styled.div`
@@ -23,8 +23,8 @@ const LabelFilter = () => {
     },[setColorFilter])
 
     return (
-        <LabelFilterContainer>
-            <button onClick={() => {setShowModal(true)}}>Label filter</button>
+        <LabelFilterContainer className='label-filter'>
+            <button  onClick={() => {setShowModal(true)}}>Label filter</button>
             <Selected>
                 {colorFilter.map((item) => <Color color={item.color} height={10} width={20} />)}
             </Selected>
