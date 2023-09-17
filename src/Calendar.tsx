@@ -2,6 +2,7 @@ import styled from "styled-components";
 import dayjs from "dayjs";
 import {useEffect, useState} from "react";
 import Day from "./Day.tsx";
+import useGetWorldWideHolidays from "./api/useGetWorldWideHolidays.tsx";
 
 interface Props {
     calendarType: 'week' | 'month'
@@ -23,8 +24,11 @@ const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 
 const Calendar = ({calendarType, selectedYear, selectedMonth}: Props) => {
     const [dates, setDates] = useState<Array<DayWithTasks>>([])
 
+    const [worldWideHolidays] = useGetWorldWideHolidays();
+
     useEffect(() => {
-        const date = dayjs(`${selectedYear}-${selectedMonth++}`);
+        const date = dayjs(`${selectedYear}-${Number(selectedMonth + 1)}`);
+
         const firstDayOfMonth = date.startOf('month').day();
         const lastDayOfMonth = date.endOf('month').day();
 
@@ -38,20 +42,18 @@ const Calendar = ({calendarType, selectedYear, selectedMonth}: Props) => {
             if(current.isSame(current.startOf('month'), 'day') || current.isSame(current.endOf('month'), 'day')){
                 dayFormat = 'MMM D'
             }
-            result.push({formattedValue: current.format('YYYY-MM-DD'), formattedDayValue: current.format(dayFormat), tasks: []})
+            result.push({formattedValue: current.format('YYYY-MM-DD'), isCurrent: current.isSame(date, 'month'), formattedDayValue: current.format(dayFormat), tasks: []})
             current = current.add(1, 'day');
         }while (!current.isAfter(lastDay, 'day'))
         setDates(result)
     },[selectedYear, selectedMonth])
 
     return (
-        <>
-            <CalendarContainer>
-                {days.map((dayName) => (<div key={dayName}>{dayName}</div>))}
-                {dates.map((item) => (<Day key={item.formattedValue} value={item} />))}
-                <div>{calendarType}</div>
-            </CalendarContainer>
-        </>
+
+                    <CalendarContainer id="calendar">
+                        {days.map((dayName) => (<div key={dayName}>{dayName}</div>))}
+                        {dates.map((item) => (<Day worldWideHolidayList={worldWideHolidays[item.formattedValue]} key={item.formattedValue} value={item} />))}
+                    </CalendarContainer>
     )
 }
 
